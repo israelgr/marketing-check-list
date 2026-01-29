@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tailwindcss init -p)",
+      "Bash(npm run build:*)",
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(grep:*)",
+      "Bash(npm run import-csv:*)",
+      "Bash(npm run dev:*)",
+      "Bash(command:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm install:*)",
+      "Bash(nvm use:*)",
+      "Bash(npx tsc:*)",
+      "Bash(firebase login:*)",
+      "Bash(firebase projects:list:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(gh auth status:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(brew install:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
