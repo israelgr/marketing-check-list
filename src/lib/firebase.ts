@@ -101,6 +101,7 @@ export const resetAllGuestsStatus = async (guests: Guest[]) => {
     batch.update(guestRef, {
       alreadySpoke: false,
       confirmationStatus: 'טרם טופל',
+      handledBy: '',
       lastUpdated: Timestamp.now(),
     });
   }
