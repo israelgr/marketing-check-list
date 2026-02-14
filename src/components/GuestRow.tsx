@@ -5,6 +5,7 @@ import { updateGuestStatus } from '../lib/firebase';
 
 interface GuestRowProps {
   guest: Guest;
+  index: number;
   onDelete: (guestId: string, guestName: string) => void;
 }
 
@@ -18,7 +19,7 @@ const SavingIndicator: React.FC = () => (
   </span>
 );
 
-export const GuestRow: React.FC<GuestRowProps> = ({ guest, onDelete }) => {
+export const GuestRow: React.FC<GuestRowProps> = ({ guest, index, onDelete }) => {
   const [updateState, setUpdateState] = useState<UpdateState>('idle');
   const [localHandledBy, setLocalHandledBy] = useState(guest.handledBy || '');
   const [localPhone, setLocalPhone] = useState(guest.phone || '');
@@ -167,7 +168,7 @@ export const GuestRow: React.FC<GuestRowProps> = ({ guest, onDelete }) => {
       {/* Row number with circular badge */}
       <td className="px-3 py-2.5 text-center">
         <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-sm font-medium text-slate-600 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors duration-200">
-          {guest.rowNumber}
+          {index}
         </span>
       </td>
 

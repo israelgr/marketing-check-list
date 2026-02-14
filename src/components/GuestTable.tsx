@@ -78,10 +78,11 @@ export const GuestTable: React.FC<GuestTableProps> = ({ guests, onResetFilters, 
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {guests.map((guest) => (
+            {guests.map((guest, index) => (
               <GuestRow
                 key={guest.id}
                 guest={guest}
+                index={index + 1}
                 onDelete={onDeleteGuest}
               />
             ))}
