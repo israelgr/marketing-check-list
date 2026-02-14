@@ -9,7 +9,8 @@ import {
   enableNetwork,
   disableNetwork,
   addDoc,
-  deleteDoc
+  deleteDoc,
+  writeBatch
 } from 'firebase/firestore';
 import type { Guest, ConfirmationStatus } from './types';
 
@@ -70,6 +71,7 @@ export const updateGuestStatus = async (
     name?: string;
     age?: string;
     notes?: string;
+    framework?: string;
   }
 ) => {
   const guestRef = doc(db, 'guests', guestId);
@@ -90,4 +92,17 @@ export const addGuest = async (guestData: Omit<Guest, 'id' | 'lastUpdated'>) => 
 export const removeGuest = async (guestId: string) => {
   const guestRef = doc(db, 'guests', guestId);
   await deleteDoc(guestRef);
+};
+
+export const resetAllGuestsStatus = async (guests: Guest[]) => {
+  const batch = writeBatch(db);
+  for (const guest of guests) {
+    const guestRef = doc(db, 'guests', guest.id);
+    batch.update(guestRef, {
+      alreadySpoke: false,
+      confirmationStatus: 'טרם טופל',
+      lastUpdated: Timestamp.now(),
+    });
+  }
+  await batch.commit();
 };

@@ -25,6 +25,7 @@ export const GuestRow: React.FC<GuestRowProps> = ({ guest, onDelete }) => {
   const [localName, setLocalName] = useState(guest.name || '');
   const [localAge, setLocalAge] = useState(guest.age || '');
   const [localNotes, setLocalNotes] = useState(guest.notes || '');
+  const [localFramework, setLocalFramework] = useState(guest.framework || '');
   const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync localHandledBy with guest.handledBy when it changes externally
@@ -51,6 +52,11 @@ export const GuestRow: React.FC<GuestRowProps> = ({ guest, onDelete }) => {
   useEffect(() => {
     setLocalNotes(guest.notes || '');
   }, [guest.notes]);
+
+  // Sync localFramework with guest.framework when it changes externally
+  useEffect(() => {
+    setLocalFramework(guest.framework || '');
+  }, [guest.framework]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -117,6 +123,12 @@ export const GuestRow: React.FC<GuestRowProps> = ({ guest, onDelete }) => {
       await handleUpdate(() => updateGuestStatus(guest.id, { notes: localNotes }));
     }
   }, [guest.id, guest.notes, localNotes, handleUpdate]);
+
+  const handleFrameworkBlur = useCallback(async () => {
+    if (localFramework !== guest.framework) {
+      await handleUpdate(() => updateGuestStatus(guest.id, { framework: localFramework }));
+    }
+  }, [guest.id, guest.framework, localFramework, handleUpdate]);
 
   const handleDeleteClick = useCallback(() => {
     onDelete(guest.id, guest.name);
@@ -212,9 +224,20 @@ export const GuestRow: React.FC<GuestRowProps> = ({ guest, onDelete }) => {
         {guest.gender}
       </td>
 
-      {/* Framework */}
-      <td className="px-3 py-2.5 text-slate-700 text-sm">
-        {guest.framework}
+      {/* Framework - Editable */}
+      <td className="px-3 py-2.5">
+        <div className="relative">
+          {updateState === 'saving' && <SavingIndicator />}
+          <input
+            type="text"
+            value={localFramework}
+            onChange={(e) => setLocalFramework(e.target.value)}
+            onBlur={handleFrameworkBlur}
+            disabled={isUpdating}
+            placeholder="מסגרת..."
+            className="w-full px-2 py-1 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-300 transition-all duration-200 hover:border-slate-300 text-slate-700 placeholder:text-slate-400"
+          />
+        </div>
       </td>
 
       {/* Responsibility */}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Guest, ConfirmationStatus } from './lib/types';
-import { subscribeToGuests, reconnectFirebase, addGuest, removeGuest } from './lib/firebase';
+import { subscribeToGuests, reconnectFirebase, addGuest, removeGuest, resetAllGuestsStatus } from './lib/firebase';
 import SearchFilter from './components/SearchFilter';
 import GuestTable from './components/GuestTable';
 import AddGuestModal from './components/AddGuestModal';
@@ -18,6 +18,7 @@ function App() {
   const [subscriptionKey, setSubscriptionKey] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToGuests(
@@ -73,6 +74,15 @@ function App() {
   const handleCancelDelete = useCallback(() => {
     setDeleteConfirm(null);
   }, []);
+
+  const handleResetAll = useCallback(async () => {
+    try {
+      await resetAllGuestsStatus(guests);
+    } catch (err) {
+      console.error('Error resetting guests:', err);
+    }
+    setShowResetModal(false);
+  }, [guests]);
 
   // Calculate next row number for new guests
   const nextRowNumber = useMemo(() => {
@@ -236,6 +246,18 @@ function App() {
                 </span>
               )}
 
+              {/* Reset All Button */}
+              <button
+                onClick={() => setShowResetModal(true)}
+                className="flex items-center gap-2 px-4 py-2 text-sm bg-white border-2 border-orange-200 rounded-xl hover:border-orange-400 hover:bg-orange-50/50 transition-all duration-200 shadow-sm"
+                title="איפוס כל הסטטוסים"
+              >
+                <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span className="text-orange-700">איפוס הכל</span>
+              </button>
+
               {/* Refresh Button */}
               <button
                 onClick={handleRefresh}
@@ -354,6 +376,52 @@ function App() {
                   className="px-5 py-2.5 text-sm font-medium text-white bg-red-600 rounded-xl hover:bg-red-700 transition-all shadow-lg shadow-red-500/30"
                 >
                   מחק
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reset All Confirmation Dialog */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowResetModal(false)}
+          />
+
+          {/* Dialog */}
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md transform transition-all animate-fade-in">
+              {/* Icon */}
+              <div className="pt-6 pb-4 text-center">
+                <div className="mx-auto w-14 h-14 flex items-center justify-center rounded-full bg-orange-100 mb-4">
+                  <svg className="w-7 h-7 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-slate-800 mb-2">איפוס כל הסטטוסים</h3>
+                <p className="text-slate-600 px-6">
+                  פעולה זו תאפס את סטטוס השיחה וסטטוס האישור עבור כל <span className="font-semibold text-slate-800">{guests.length}</span> האורחים.
+                </p>
+                <p className="text-sm text-slate-500 mt-1">כל האורחים יחזרו לסטטוס &quot;טרם טופל&quot;.</p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
+                <button
+                  onClick={() => setShowResetModal(false)}
+                  className="px-5 py-2.5 text-sm font-medium text-slate-700 bg-white border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all"
+                >
+                  ביטול
+                </button>
+                <button
+                  onClick={handleResetAll}
+                  className="px-5 py-2.5 text-sm font-medium text-white bg-orange-600 rounded-xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-500/30"
+                >
+                  אפס הכל
                 </button>
               </div>
             </div>

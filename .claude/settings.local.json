@@ -20,7 +20,19 @@
       "Bash(git init:*)",
       "Bash(git branch:*)",
       "Bash(brew install:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(source:*)",
+      "Bash(npx vite build:*)",
+      "Bash(./node_modules/.bin/vite build:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run import-excel:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm run dedup:*)",
+      "Bash(npm run dedup:apply:*)"
     ]
   }
 }
